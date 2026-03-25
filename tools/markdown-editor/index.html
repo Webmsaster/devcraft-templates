@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown Editor — Free Live Preview Tool | DevCraft Studio</title>
+<meta name="description" content="Free browser-based Markdown editor with live preview, syntax highlighting, dark mode, and export options. No sign-up required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== CSS RESET & VARIABLES ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-editor: #ffffff;
+  --bg-preview: #ffffff;
+  --bg-toolbar: #f8f9fa;
+  --bg-banner: #1a1a2e;
+  --bg-code: #f1f3f5;
+  --bg-code-block: #282c34;
+  --bg-blockquote: #f8f9fa;
+  --bg-table-header: #f1f3f5;
+  --bg-table-stripe: #f8f9fa;
+  --bg-hover: #e9ecef;
+  --bg-input: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --text-code: #e06c75;
+  --text-link: #228be6;
+  --text-banner: #ffffff;
+  --text-on-accent: #ffffff;
+  --border-color: #dee2e6;
+  --border-light: #e9ecef;
+  --accent: #228be6;
+  --accent-hover: #1c7ed6;
+  --accent-light: #e7f5ff;
+  --success: #40c057;
+  --warning: #fab005;
+  --danger: #fa5252;
+  --gutter-bg: #f8f9fa;
+  --gutter-text: #adb5bd;
+  --selection: #d0ebff;
+  --scrollbar-thumb: #ced4da;
+  --scrollbar-track: transparent;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --transition: 0.2s ease;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1b26;
+  --bg-secondary: #1f2133;
+  --bg-tertiary: #292b3e;
+  --bg-editor: #1a1b26;
+  --bg-preview: #1f2133;
+  --bg-toolbar: #1f2133;
+  --bg-code: #292b3e;
+  --bg-code-block: #13141c;
+  --bg-blockquote: #1f2133;
+  --bg-table-header: #292b3e;
+  --bg-table-stripe: #1f2133;
+  --bg-hover: #292b3e;
+  --bg-input: #1f2133;
+  --text-primary: #c8cedf;
+  --text-secondary: #9aa5ce;
+  --text-muted: #565f89;
+  --text-code: #ff9e64;
+  --text-link: #7aa2f7;
+  --text-banner: #c8cedf;
+  --border-color: #292b3e;
+  --border-light: #1f2133;
+  --accent: #7aa2f7;
+  --accent-hover: #89b4fa;
+  --accent-light: #1f2133;
+  --gutter-bg: #1a1b26;
+  --gutter-text: #3b3d57;
+  --selection: #283457;
+  --scrollbar-thumb: #3b3d57;
+}
+
+/* ========== GLOBAL STYLES ========== */
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background var(--transition), color var(--transition);
+}
+
+::selection { background: var(--selection); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--text-primary);
+  transition: all var(--transition);
+}
+
+/* ========== BANNER ========== */
+.banner {
+  background: var(--bg-banner);
+  color: var(--text-banner);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 100;
+}
+.banner-brand {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.banner-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.2);
+}
+.banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #7aa2f7;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.banner-cta:hover { color: #89b4fa; text-decoration: underline; }
+.banner-cta svg { width: 14px; height: 14px; }
+
+/* ========== TOOLBAR ========== */
+.toolbar {
+  background: var(--bg-toolbar);
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  transition: background var(--transition), border-color var(--transition);
+}
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+  margin: 0 6px;
+}
+.toolbar-spacer { flex: 1; }
+.toolbar-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  position: relative;
+}
+.toolbar-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.toolbar-btn svg { width: 18px; height: 18px; }
+.toolbar-btn[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-banner);
+  color: #fff;
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Export dropdown */
+.export-dropdown {
+  position: relative;
+}
+.export-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+}
+.export-menu.open { display: block; }
+.export-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  text-align: left;
+}
+.export-menu button:hover { background: var(--bg-hover); }
+.export-menu button svg { width: 16px; height: 16px; color: var(--text-muted); }
+
+/* ========== MAIN EDITOR LAYOUT ========== */
+.editor-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+.pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  transition: flex var(--transition);
+}
+.pane-header {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+/* Resizer */
+.resizer {
+  width: 5px;
+  cursor: col-resize;
+  background: var(--border-color);
+  flex-shrink: 0;
+  position: relative;
+  transition: background var(--transition);
+}
+.resizer:hover, .resizer.active { background: var(--accent); }
+
+/* ========== EDITOR PANE ========== */
+.editor-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+.line-numbers {
+  width: 50px;
+  background: var(--gutter-bg);
+  color: var(--gutter-text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  padding: 12px 8px 12px 0;
+  text-align: right;
+  overflow: hidden;
+  user-select: none;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.editor-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--bg-editor);
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-y: auto;
+  transition: background var(--transition), color var(--transition);
+}
+.editor-textarea::placeholder { color: var(--text-muted); }
+
+/* ========== PREVIEW PANE ========== */
+.preview-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+  background: var(--bg-preview);
+  transition: background var(--transition);
+}
+
+/* Preview typography */
+.preview-content h1 { font-size: 2rem; font-weight: 700; margin: 0 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border-color); }
+.preview-content h2 { font-size: 1.5rem; font-weight: 600; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light); }
+.preview-content h3 { font-size: 1.25rem; font-weight: 600; margin: 20px 0 10px; }
+.preview-content h4 { font-size: 1.1rem; font-weight: 600; margin: 16px 0 8px; }
+.preview-content h5 { font-size: 1rem; font-weight: 600; margin: 14px 0 6px; }
+.preview-content h6 { font-size: 0.9rem; font-weight: 600; margin: 12px 0 6px; color: var(--text-muted); }
+.preview-content p { margin: 0 0 16px; }
+.preview-content a { color: var(--text-link); text-decoration: none; border-bottom: 1px solid transparent; }
+.preview-content a:hover { border-bottom-color: var(--text-link); }
+.preview-content strong { font-weight: 600; }
+.preview-content em { font-style: italic; }
+.preview-content img { max-width: 100%; height: auto; border-radius: var(--radius-md); margin: 8px 0; }
+.preview-content hr { border: none; border-top: 2px solid var(--border-color); margin: 24px 0; }
+
+/* Lists */
+.preview-content ul, .preview-content ol { margin: 0 0 16px; padding-left: 24px; }
+.preview-content li { margin: 4px 0; }
+.preview-content li > ul, .preview-content li > ol { margin: 4px 0 4px; }
+
+/* Blockquote */
+.preview-content blockquote {
+  border-left: 4px solid var(--accent);
+  background: var(--bg-blockquote);
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.preview-content blockquote p:last-child { margin-bottom: 0; }
+
+/* Code */
+.preview-content code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-code);
+  color: var(--text-code);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.preview-content pre {
+  background: var(--bg-code-block);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin: 0 0 16px;
+  overflow-x: auto;
+  position: relative;
+}
+.preview-content pre code {
+  background: none;
+  color: #abb2bf;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.code-lang-label {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 0.7rem;
+  color: #636d83;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+/* Tables */
+.preview-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+}
+.preview-content th {
+  background: var(--bg-table-header);
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border-color);
+}
+.preview-content td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+.preview-content tr:nth-child(even) td { background: var(--bg-table-stripe); }
+
+/* Task lists */
+.preview-content .task-item { list-style: none; margin-left: -20px; }
+.preview-content .task-checkbox { margin-right: 6px; }
+
+/* ========== STATUS BAR ========== */
+.status-bar {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+.status-left, .status-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+/* ========== HIRE ME SECTION ========== */
+.hire-section {
+  display: none;
+}
+.hire-section.visible {
+  display: block;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 40px 20px;
+  text-align: center;
+}
+.hire-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.hire-section h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.hire-section p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.hire-services {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.hire-tag {
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.hire-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: var(--text-on-accent) !important;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background var(--transition), transform var(--transition);
+}
+.hire-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+/* ========== FULLSCREEN MODE ========== */
+.fullscreen .banner,
+.fullscreen .toolbar,
+.fullscreen .status-bar,
+.fullscreen .pane-header,
+.fullscreen .hire-section,
+.fullscreen .resizer,
+.fullscreen .pane:last-of-type {
+  display: none !important;
+}
+.fullscreen .pane:first-of-type { flex: 1; }
+.fullscreen .editor-textarea { padding: 32px 10%; font-size: 1rem; line-height: 1.8; }
+.fullscreen .line-numbers { display: none; }
+
+/* ========== MOBILE ========== */
+@media (max-width: 768px) {
+  .banner { font-size: 0.78rem; padding: 6px 12px; gap: 8px; }
+  .banner-divider { display: none; }
+  .toolbar { gap: 1px; padding: 4px 8px; }
+  .toolbar-btn { width: 30px; height: 30px; }
+  .toolbar-btn svg { width: 16px; height: 16px; }
+  .toolbar-separator { margin: 0 3px; }
+  .editor-container { flex-direction: column; }
+  .resizer { display: none; }
+  .pane { display: none; }
+  .pane.mobile-active { display: flex; flex: 1; }
+  .mobile-toggle { display: flex !important; }
+  .preview-content { padding: 16px; }
+  .line-numbers { width: 40px; }
+  .status-bar { padding: 4px 10px; }
+  .status-left { gap: 10px; }
+}
+@media (min-width: 769px) {
+  .mobile-toggle { display: none !important; }
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 48px;
+  right: 20px;
+  background: var(--bg-banner);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ========== PRINT ========== */
+@media print {
+  .banner, .toolbar, .status-bar, .resizer, .pane:first-of-type, .hire-section { display: none !important; }
+  .pane:last-of-type { display: flex !important; flex: 1; }
+  .preview-content { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="banner">
+  <span class="banner-brand">Free Markdown Editor by DevCraft Studio</span>
+  <span class="banner-divider"></span>
+  <a href="#hire" class="banner-cta" onclick="toggleHireSection(event)">
+    Need a custom website? &rarr; Hire Me
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar" id="toolbar">
+  <div class="toolbar-group">
+    <button class="toolbar-btn" data-tooltip="Bold (Ctrl+B)" onclick="insertFormat('bold')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Italic (Ctrl+I)" onclick="insertFormat('italic')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Strikethrough" onclick="insertFormat('strike')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4H9a3 3 0 00-3 3v0a3 3 0 003 3h6"/><path d="M8 20h7a3 3 0 003-3v0a3 3 0 00-3-3H8"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+    </button>
+  </div>
+  <div class="toolbar-separator"></div>
+  <div class="toolbar-group">
+    <button class="toolbar-btn" data-tooltip="Heading" onclick="insertFormat('heading')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v16M18 4v16M6 12h12"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Quote" onclick="insertFormat('quote')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>
+    </button>
+  </div>
+  <div class="toolbar-separator"></div>
+  <div class="toolbar-group">
+    <button class="toolbar-btn" data-tooltip="Link (Ctrl+K)" onclick="insertFormat('link')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Image" onclick="insertFormat('image')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+    </button>
+  </div>
+  <div class="toolbar-separator"></div>
+  <div class="toolbar-group">
+    <button class="toolbar-btn" data-tooltip="Inline Code" onclick="insertFormat('code')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Code Block" onclick="insertFormat('codeblock')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 8 5 12 9 16"/><polyline points="15 8 19 12 15 16"/></svg>
+    </button>
+  </div>
+  <div class="toolbar-separator"></div>
+  <div class="toolbar-group">
+    <button class="toolbar-btn" data-tooltip="Unordered List" onclick="insertFormat('ul')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Ordered List" onclick="insertFormat('ol')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="2" y="8" font-size="8" fill="currentColor" stroke="none" font-family="sans-serif">1</text><text x="2" y="14" font-size="8" fill="currentColor" stroke="none" font-family="sans-serif">2</text><text x="2" y="20" font-size="8" fill="currentColor" stroke="none" font-family="sans-serif">3</text></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Horizontal Rule" onclick="insertFormat('hr')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/></svg>
+    </button>
+    <button class="toolbar-btn" data-tooltip="Table" onclick="insertFormat('table')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+    </button>
+  </div>
+
+  <div class="toolbar-spacer"></div>
+
+  <!-- Mobile toggle -->
+  <button class="toolbar-btn mobile-toggle" data-tooltip="Toggle View" onclick="toggleMobileView()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+  </button>
+
+  <div class="toolbar-group">
+    <!-- Fullscreen -->
+    <button class="toolbar-btn" data-tooltip="Fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </button>
+    <!-- Dark mode -->
+    <button class="toolbar-btn" data-tooltip="Toggle Dark Mode" onclick="toggleTheme()" id="themeBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+    <!-- Export -->
+    <div class="export-dropdown">
+      <button class="toolbar-btn" data-tooltip="Export" onclick="toggleExportMenu(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+      <div class="export-menu" id="exportMenu">
+        <button onclick="exportHTML()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          Download HTML File
+        </button>
+        <button onclick="copyHTML()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy Raw HTML
+        </button>
+        <button onclick="copyMarkdown()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy Markdown
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR CONTAINER -->
+<div class="editor-container" id="editorContainer">
+  <!-- Editor Pane -->
+  <div class="pane mobile-active" id="editorPane">
+    <div class="pane-header">
+      <span>Markdown</span>
+      <span id="savedIndicator" style="display:flex;align-items:center;gap:4px"><span class="status-dot"></span> Auto-saved</span>
+    </div>
+    <div class="editor-wrap">
+      <div class="line-numbers" id="lineNumbers"></div>
+      <textarea class="editor-textarea" id="editor" spellcheck="false" placeholder="Start writing Markdown..."></textarea>
+    </div>
+  </div>
+
+  <!-- Resizer -->
+  <div class="resizer" id="resizer"></div>
+
+  <!-- Preview Pane -->
+  <div class="pane" id="previewPane">
+    <div class="pane-header">
+      <span>Preview</span>
+    </div>
+    <div class="preview-content" id="preview"></div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-left">
+    <span class="status-item" id="wordCount">0 words</span>
+    <span class="status-item" id="charCount">0 chars</span>
+    <span class="status-item" id="lineCount">0 lines</span>
+    <span class="status-item" id="readingTime">~0 min read</span>
+  </div>
+  <div class="status-right">
+    <span class="status-item">Markdown</span>
+    <span class="status-item" id="cursorPos">Ln 1, Col 1</span>
+  </div>
+</div>
+
+<!-- HIRE ME SECTION -->
+<div class="hire-section" id="hireSection">
+  <div class="hire-inner">
+    <h2>Need More Than a Markdown Editor?</h2>
+    <p>I build custom web applications, developer tools, landing pages, and full-stack solutions. Fast delivery, clean code, pixel-perfect results.</p>
+    <div class="hire-services">
+      <span class="hire-tag">Custom Web Apps</span>
+      <span class="hire-tag">Developer Tools</span>
+      <span class="hire-tag">Landing Pages</span>
+      <span class="hire-tag">API Development</span>
+      <span class="hire-tag">SaaS Products</span>
+      <span class="hire-tag">Performance Optimization</span>
+    </div>
+    <a href="https://www.fiverr.com/" class="hire-btn" target="_blank" rel="noopener">
+      Hire Me on Fiverr
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== ELEMENTS ==========
+const editor = document.getElementById('editor');
+const preview = document.getElementById('preview');
+const lineNumbers = document.getElementById('lineNumbers');
+const wordCountEl = document.getElementById('wordCount');
+const charCountEl = document.getElementById('charCount');
+const lineCountEl = document.getElementById('lineCount');
+const readingTimeEl = document.getElementById('readingTime');
+const cursorPosEl = document.getElementById('cursorPos');
+const savedIndicator = document.getElementById('savedIndicator');
+const editorPane = document.getElementById('editorPane');
+const previewPane = document.getElementById('previewPane');
+const resizer = document.getElementById('resizer');
+const exportMenu = document.getElementById('exportMenu');
+const toastEl = document.getElementById('toast');
+
+// ========== DEFAULT CONTENT ==========
+const defaultContent = `# Welcome to Markdown Editor
+
+A **free**, browser-based Markdown editor with live preview. No sign-up, no tracking, no nonsense. Just write.
+
+---
+
+## Features
+
+### Real-Time Preview
+Everything you type on the left instantly renders on the right. What you see is what you get.
+
+### Formatting Made Easy
+- **Bold** text with \\`**bold**\\` or Ctrl+B
+- *Italic* text with \\`*italic*\\` or Ctrl+I
+- ~~Strikethrough~~ with \\`~~text~~\\`
+- [Links](https://example.com) with Ctrl+K
+- Inline \\`code\\` with backticks
+
+### Code Blocks
+Full syntax highlighting for code blocks:
+
+\\`\\`\\`javascript
+function greet(name) {
+  const message = \\`Hello, \${name}!\\`;
+  console.log(message);
+  return message;
+}
+
+greet("Developer");
+\\`\\`\\`
+
+### Tables
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Live Preview | Done | Real-time rendering |
+| Dark Mode | Done | Easy on the eyes |
+| Export | Done | HTML, Markdown, Copy |
+| Auto-Save | Done | Never lose your work |
+| Line Numbers | Done | Easy navigation |
+
+### Lists
+
+**Unordered:**
+- First item
+- Second item
+  - Nested item
+  - Another nested item
+- Third item
+
+**Ordered:**
+1. Plan your document
+2. Write the content
+3. Preview the result
+4. Export and share
+
+### Blockquotes
+
+> "The best writing tool is the one that gets out of your way."
+>
+> — Every developer, ever
+
+### Images
+
+![Placeholder](https://via.placeholder.com/600x200/228be6/ffffff?text=Your+Image+Here)
+
+---
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl + B | Bold |
+| Ctrl + I | Italic |
+| Ctrl + K | Insert Link |
+| Tab | Indent |
+
+---
+
+## Export Options
+
+Click the **download icon** in the toolbar to:
+- **Download** as a standalone HTML file
+- **Copy** the rendered HTML
+- **Copy** the raw Markdown
+
+---
+
+## Built With Care
+
+This editor was crafted by **DevCraft Studio**. We build developer tools, custom web apps, and pixel-perfect websites.
+
+**Need something custom?** [Hire us](https://fiverr.com) and let's build it together.
+
+---
+
+*Start editing by clearing this content, or just start typing below it. Your work is auto-saved to your browser.*
+`;
+
+// ========== MARKDOWN PARSER ==========
+function parseMarkdown(md) {
+  // Escape HTML entities in text
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // Syntax highlighting for code blocks
+  function highlightCode(code, lang) {
+    let escaped = escapeHtml(code);
+
+    // Language-specific keyword sets
+    const keywords = {
+      javascript: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|class|extends|import|export|default|from|async|await|try|catch|throw|finally|typeof|instanceof|in|of|yield|null|undefined|true|false|void|delete|debugger|with|super|static|get|set)(?=\s|[^\w]|$)/g,
+      js: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|class|extends|import|export|default|from|async|await|try|catch|throw|finally|typeof|instanceof|in|of|yield|null|undefined|true|false|void|delete|debugger|with|super|static|get|set)(?=\s|[^\w]|$)/g,
+      python: /\b(def|class|return|if|elif|else|for|while|import|from|as|try|except|finally|raise|with|yield|lambda|pass|break|continue|and|or|not|is|in|None|True|False|self|global|nonlocal|assert|del|print|async|await)(?=\s|[^\w]|$)/g,
+      py: /\b(def|class|return|if|elif|else|for|while|import|from|as|try|except|finally|raise|with|yield|lambda|pass|break|continue|and|or|not|is|in|None|True|False|self|global|nonlocal|assert|del|print|async|await)(?=\s|[^\w]|$)/g,
+      css: /\b(color|background|margin|padding|border|display|position|width|height|font|text|flex|grid|align|justify|overflow|transition|transform|animation|opacity|z-index|content|cursor|outline|box-shadow|none|auto|inherit|initial|important)(?=\s|[^\w]|$)/g,
+      html: /\b(div|span|class|id|style|src|href|alt|type|value|name|placeholder|onclick|onchange|data|aria)(?=\s|[^\w]|$)/g,
+      typescript: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|class|extends|import|export|default|from|async|await|try|catch|throw|finally|typeof|instanceof|in|of|interface|type|enum|implements|abstract|private|public|protected|readonly|as|is|keyof|infer|never|unknown|any|void|null|undefined|true|false|super|static|get|set|declare|module|namespace)(?=\s|[^\w]|$)/g,
+      ts: /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|this|class|extends|import|export|default|from|async|await|try|catch|throw|finally|typeof|instanceof|in|of|interface|type|enum|implements|abstract|private|public|protected|readonly|as|is|keyof|infer|never|unknown|any|void|null|undefined|true|false|super|static|get|set|declare|module|namespace)(?=\s|[^\w]|$)/g,
+      java: /\b(public|private|protected|static|final|abstract|class|interface|extends|implements|new|return|if|else|for|while|do|switch|case|break|continue|try|catch|throw|throws|finally|import|package|void|int|boolean|String|double|float|long|char|byte|short|null|true|false|this|super|instanceof)(?=\s|[^\w]|$)/g,
+      go: /\b(func|package|import|return|if|else|for|range|switch|case|break|continue|defer|go|chan|map|struct|interface|type|const|var|nil|true|false|select|default|fallthrough|goto)(?=\s|[^\w]|$)/g,
+      rust: /\b(fn|let|mut|const|if|else|for|while|loop|match|return|struct|enum|impl|trait|pub|use|mod|self|super|crate|where|async|await|move|ref|type|static|unsafe|extern|true|false|Some|None|Ok|Err|Box|Vec|String|Option|Result)(?=\s|[^\w]|$)/g,
+      bash: /\b(echo|if|then|else|fi|for|do|done|while|case|esac|function|return|exit|export|source|local|readonly|shift|set|unset|cd|ls|grep|sed|awk|cat|mkdir|rm|cp|mv|chmod|chown|sudo|apt|npm|pip|git|docker|curl|wget)(?=\s|[^\w]|$)/g,
+      sh: /\b(echo|if|then|else|fi|for|do|done|while|case|esac|function|return|exit|export|source|local|readonly|shift|set|unset|cd|ls|grep|sed|awk|cat|mkdir|rm|cp|mv|chmod|chown|sudo|apt|npm|pip|git|docker|curl|wget)(?=\s|[^\w]|$)/g,
+      sql: /\b(SELECT|FROM|WHERE|INSERT|INTO|UPDATE|SET|DELETE|CREATE|TABLE|ALTER|DROP|INDEX|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AND|OR|NOT|NULL|IS|IN|LIKE|BETWEEN|ORDER|BY|GROUP|HAVING|LIMIT|OFFSET|AS|DISTINCT|COUNT|SUM|AVG|MAX|MIN|UNION|ALL|EXISTS|CASE|WHEN|THEN|ELSE|END|PRIMARY|KEY|FOREIGN|REFERENCES|VALUES|INT|VARCHAR|TEXT|BOOLEAN|DATE|TIMESTAMP)(?=\s|[^\w]|$)/gi,
+      json: null,
+      xml: null,
+      yaml: null,
+      yml: null,
+      markdown: null,
+      md: null,
+    };
+
+    // Strings: "..." and '...' and `...`
+    escaped = escaped.replace(/(["'`])(?:(?!\1|\\).|\\.)*?\1/g, '<span style="color:#98c379">$&</span>');
+
+    // Comments: // and # (single line)
+    escaped = escaped.replace(/(\/\/.*$|#(?!include|define|if|else|endif|pragma).*$)/gm, '<span style="color:#5c6370;font-style:italic">$&</span>');
+
+    // Numbers
+    escaped = escaped.replace(/\b(\d+\.?\d*)\b/g, '<span style="color:#d19a66">$1</span>');
+
+    // Keywords based on language
+    const langLower = lang ? lang.toLowerCase().trim() : '';
+    const kwRegex = keywords[langLower];
+    if (kwRegex) {
+      escaped = escaped.replace(kwRegex, '<span style="color:#c678dd">$1</span>');
+    }
+
+    // Function calls pattern: word followed by (
+    escaped = escaped.replace(/\b([a-zA-Z_]\w*)\s*(?=\()/g, '<span style="color:#61afef">$1</span>');
+
+    return escaped;
+  }
+
+  let lines = md.split('\n');
+  let html = '';
+  let i = 0;
+  let inCodeBlock = false;
+  let codeBlockLang = '';
+  let codeBlockContent = '';
+
+  while (i < lines.length) {
+    let line = lines[i];
+
+    // Code blocks (fenced)
+    if (/^```(\w*)/.test(line)) {
+      if (!inCodeBlock) {
+        inCodeBlock = true;
+        codeBlockLang = line.match(/^```(\w*)/)[1] || '';
+        codeBlockContent = '';
+        i++;
+        continue;
+      } else {
+        // Close code block
+        inCodeBlock = false;
+        const langLabel = codeBlockLang ? `<span class="code-lang-label">${escapeHtml(codeBlockLang)}</span>` : '';
+        html += `<pre>${langLabel}<code>${highlightCode(codeBlockContent.replace(/\n$/, ''), codeBlockLang)}</code></pre>\n`;
+        codeBlockLang = '';
+        codeBlockContent = '';
+        i++;
+        continue;
+      }
+    }
+
+    if (inCodeBlock) {
+      codeBlockContent += (codeBlockContent ? '\n' : '') + line;
+      i++;
+      continue;
+    }
+
+    // Blank line
+    if (/^\s*$/.test(line)) {
+      i++;
+      continue;
+    }
+
+    // Horizontal rule
+    if (/^(\*{3,}|-{3,}|_{3,})\s*$/.test(line.trim())) {
+      html += '<hr>\n';
+      i++;
+      continue;
+    }
+
+    // Headings (ATX)
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const text = parseInline(headingMatch[2]);
+      html += `<h${level}>${text}</h${level}>\n`;
+      i++;
+      continue;
+    }
+
+    // Table
+    if (i + 1 < lines.length && /^\|(.+)\|$/.test(line.trim()) && /^\|[\s\-:|]+\|$/.test(lines[i + 1].trim())) {
+      const headerCells = line.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      const alignLine = lines[i + 1].trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      const aligns = alignLine.map(a => {
+        if (/^:-+:$/.test(a)) return 'center';
+        if (/^-+:$/.test(a)) return 'right';
+        return 'left';
+      });
+
+      let tableHtml = '<table><thead><tr>';
+      headerCells.forEach((cell, ci) => {
+        const align = aligns[ci] || 'left';
+        tableHtml += `<th style="text-align:${align}">${parseInline(cell)}</th>`;
+      });
+      tableHtml += '</tr></thead><tbody>';
+
+      i += 2;
+      while (i < lines.length && /^\|(.+)\|$/.test(lines[i].trim())) {
+        const cells = lines[i].trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        tableHtml += '<tr>';
+        cells.forEach((cell, ci) => {
+          const align = aligns[ci] || 'left';
+          tableHtml += `<td style="text-align:${align}">${parseInline(cell)}</td>`;
+        });
+        tableHtml += '</tr>';
+        i++;
+      }
+      tableHtml += '</tbody></table>';
+      html += tableHtml + '\n';
+      continue;
+    }
+
+    // Blockquote
+    if (/^>\s?/.test(line)) {
+      let quoteLines = [];
+      while (i < lines.length && (/^>\s?/.test(lines[i]) || (lines[i].trim() !== '' && quoteLines.length > 0 && !/^[#\-*\d|]/.test(lines[i])))) {
+        if (/^>\s?/.test(lines[i])) {
+          quoteLines.push(lines[i].replace(/^>\s?/, ''));
+        } else {
+          quoteLines.push(lines[i]);
+        }
+        i++;
+      }
+      // Parse inner content recursively
+      html += `<blockquote>${parseMarkdown(quoteLines.join('\n'))}</blockquote>\n`;
+      continue;
+    }
+
+    // Unordered list
+    if (/^(\s*)([-*+])\s+/.test(line)) {
+      html += parseList(lines, i, 'ul');
+      // Skip consumed lines
+      while (i < lines.length && (/^(\s*)([-*+])\s+/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) {
+        i++;
+      }
+      continue;
+    }
+
+    // Ordered list
+    if (/^(\s*)\d+\.\s+/.test(line)) {
+      html += parseList(lines, i, 'ol');
+      while (i < lines.length && (/^(\s*)\d+\.\s+/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) {
+        i++;
+      }
+      continue;
+    }
+
+    // Paragraph — collect lines until empty or special
+    let paraLines = [];
+    while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,6}\s|```|>|\*{3,}|-{3,}|_{3,}|\|.+\||\s*([-*+])\s+|\s*\d+\.\s+)/.test(lines[i])) {
+      paraLines.push(lines[i]);
+      i++;
+    }
+    if (paraLines.length > 0) {
+      html += `<p>${parseInline(paraLines.join('\n'))}</p>\n`;
+    }
+  }
+
+  // Handle unclosed code block
+  if (inCodeBlock) {
+    const langLabel = codeBlockLang ? `<span class="code-lang-label">${escapeHtml(codeBlockLang)}</span>` : '';
+    html += `<pre>${langLabel}<code>${highlightCode(codeBlockContent, codeBlockLang)}</code></pre>\n`;
+  }
+
+  return html;
+
+  // Parse inline formatting
+  function parseInline(text) {
+    // Escape HTML
+    text = escapeHtml(text);
+
+    // Images: ![alt](url)
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
+
+    // Links: [text](url)
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+    // Inline code (must come before bold/italic to prevent conflicts)
+    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // Bold + Italic
+    text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    text = text.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+
+    // Bold
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+    // Italic
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    text = text.replace(/_(.+?)_/g, '<em>$1</em>');
+
+    // Strikethrough
+    text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+
+    // Line breaks
+    text = text.replace(/\n/g, '<br>');
+
+    return text;
+  }
+
+  // Parse list block
+  function parseList(allLines, startIdx, listType) {
+    const listPattern = listType === 'ul' ? /^(\s*)([-*+])\s+(.*)/ : /^(\s*)(\d+\.)\s+(.*)/;
+    let items = [];
+    let j = startIdx;
+    let baseIndent = -1;
+
+    while (j < allLines.length) {
+      const match = allLines[j].match(listPattern);
+      if (match) {
+        const indent = match[1].length;
+        if (baseIndent === -1) baseIndent = indent;
+        if (indent === baseIndent) {
+          items.push({ text: match[3], children: [] });
+        } else if (indent > baseIndent && items.length > 0) {
+          items[items.length - 1].children.push(allLines[j]);
+        }
+        j++;
+      } else if (/^\s+/.test(allLines[j]) && allLines[j].trim() !== '' && items.length > 0) {
+        items[items.length - 1].children.push(allLines[j]);
+        j++;
+      } else {
+        break;
+      }
+    }
+
+    const tag = listType;
+    let out = `<${tag}>`;
+    items.forEach(item => {
+      // Check for task list
+      let text = item.text;
+      let taskClass = '';
+      const taskMatch = text.match(/^\[([ xX])\]\s*/);
+      if (taskMatch) {
+        const checked = taskMatch[1] !== ' ';
+        text = text.replace(/^\[([ xX])\]\s*/, '');
+        taskClass = ' class="task-item"';
+        text = `<input type="checkbox" class="task-checkbox" disabled ${checked ? 'checked' : ''}> ${text}`;
+      }
+      out += `<li${taskClass}>${parseInline(text)}`;
+      if (item.children.length > 0) {
+        // Determine child list type
+        const childStr = item.children.join('\n');
+        // Dedent children
+        const dedented = item.children.map(l => l.replace(/^  /, '')).join('\n');
+        out += '\n' + parseMarkdown(dedented);
+      }
+      out += '</li>';
+    });
+    out += `</${tag}>\n`;
+    return out;
+  }
+}
+
+// ========== UPDATE PREVIEW ==========
+let updateTimer = null;
+function updatePreview() {
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(() => {
+    const md = editor.value;
+    preview.innerHTML = parseMarkdown(md);
+    updateStats();
+    updateLineNumbers();
+    autoSave();
+  }, 50);
+}
+
+// ========== LINE NUMBERS ==========
+function updateLineNumbers() {
+  const lines = editor.value.split('\n');
+  const count = lines.length;
+  let nums = '';
+  for (let i = 1; i <= count; i++) {
+    nums += i + '\n';
+  }
+  lineNumbers.textContent = nums;
+}
+
+// ========== STATS ==========
+function updateStats() {
+  const text = editor.value;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const chars = text.length;
+  const lines = text.split('\n').length;
+  const readMin = Math.max(1, Math.ceil(words / 200));
+
+  wordCountEl.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+  charCountEl.textContent = `${chars} char${chars !== 1 ? 's' : ''}`;
+  lineCountEl.textContent = `${lines} line${lines !== 1 ? 's' : ''}`;
+  readingTimeEl.textContent = `~${readMin} min read`;
+}
+
+// ========== CURSOR POSITION ==========
+function updateCursorPos() {
+  const pos = editor.selectionStart;
+  const textBefore = editor.value.substring(0, pos);
+  const line = textBefore.split('\n').length;
+  const col = pos - textBefore.lastIndexOf('\n');
+  cursorPosEl.textContent = `Ln ${line}, Col ${col}`;
+}
+
+// ========== AUTO-SAVE ==========
+let saveTimer = null;
+function autoSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem('md-editor-content', editor.value);
+      savedIndicator.querySelector('.status-dot').style.background = 'var(--success)';
+    } catch (e) {
+      // localStorage full or unavailable
+    }
+  }, 500);
+}
+
+function loadSaved() {
+  try {
+    const saved = localStorage.getItem('md-editor-content');
+    if (saved !== null && saved.length > 0) {
+      return saved;
+    }
+  } catch (e) {}
+  return null;
+}
+
+// ========== SYNC SCROLL ==========
+editor.addEventListener('scroll', () => {
+  lineNumbers.scrollTop = editor.scrollTop;
+
+  // Proportional scroll sync with preview
+  const editorScrollRatio = editor.scrollTop / (editor.scrollHeight - editor.clientHeight || 1);
+  const previewScrollMax = preview.scrollHeight - preview.clientHeight;
+  preview.scrollTop = editorScrollRatio * previewScrollMax;
+});
+
+// ========== TOOLBAR FORMATTING ==========
+function insertFormat(type) {
+  editor.focus();
+  const start = editor.selectionStart;
+  const end = editor.selectionEnd;
+  const text = editor.value;
+  const selected = text.substring(start, end);
+  let before = '', after = '', replacement = '';
+
+  switch (type) {
+    case 'bold':
+      before = '**'; after = '**';
+      replacement = selected || 'bold text';
+      break;
+    case 'italic':
+      before = '*'; after = '*';
+      replacement = selected || 'italic text';
+      break;
+    case 'strike':
+      before = '~~'; after = '~~';
+      replacement = selected || 'strikethrough';
+      break;
+    case 'heading':
+      // Insert at line start
+      const lineStart = text.lastIndexOf('\n', start - 1) + 1;
+      const currentLine = text.substring(lineStart, text.indexOf('\n', start) === -1 ? text.length : text.indexOf('\n', start));
+      const headingMatch = currentLine.match(/^(#{1,5})\s/);
+      if (headingMatch) {
+        // Increase heading level
+        const newLevel = headingMatch[1].length < 6 ? '#'.repeat(headingMatch[1].length + 1) : '#';
+        editor.value = text.substring(0, lineStart) + currentLine.replace(/^#{1,6}\s/, newLevel + ' ') + text.substring(lineStart + currentLine.length);
+      } else {
+        editor.value = text.substring(0, lineStart) + '## ' + text.substring(lineStart);
+      }
+      editor.selectionStart = editor.selectionEnd = start + 3;
+      updatePreview();
+      return;
+    case 'link':
+      if (selected) {
+        replacement = `[${selected}](url)`;
+      } else {
+        replacement = '[link text](url)';
+      }
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start + 1;
+      editor.selectionEnd = start + (selected ? selected.length + 1 : 10);
+      updatePreview();
+      return;
+    case 'image':
+      replacement = '![alt text](image-url)';
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start + 2;
+      editor.selectionEnd = start + 10;
+      updatePreview();
+      return;
+    case 'code':
+      before = '`'; after = '`';
+      replacement = selected || 'code';
+      break;
+    case 'codeblock':
+      before = '```\n'; after = '\n```';
+      replacement = selected || 'code here';
+      break;
+    case 'ul':
+      // Add bullet to each selected line or insert new
+      if (selected) {
+        replacement = selected.split('\n').map(l => `- ${l}`).join('\n');
+      } else {
+        replacement = '- List item';
+      }
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start;
+      editor.selectionEnd = start + replacement.length;
+      updatePreview();
+      return;
+    case 'ol':
+      if (selected) {
+        replacement = selected.split('\n').map((l, i) => `${i + 1}. ${l}`).join('\n');
+      } else {
+        replacement = '1. List item';
+      }
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start;
+      editor.selectionEnd = start + replacement.length;
+      updatePreview();
+      return;
+    case 'quote':
+      if (selected) {
+        replacement = selected.split('\n').map(l => `> ${l}`).join('\n');
+      } else {
+        replacement = '> Quote';
+      }
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start;
+      editor.selectionEnd = start + replacement.length;
+      updatePreview();
+      return;
+    case 'hr':
+      replacement = '\n---\n';
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + replacement.length;
+      updatePreview();
+      return;
+    case 'table':
+      replacement = '\n| Header 1 | Header 2 | Header 3 |\n|----------|----------|----------|\n| Cell 1   | Cell 2   | Cell 3   |\n| Cell 4   | Cell 5   | Cell 6   |\n';
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.selectionStart = start;
+      editor.selectionEnd = start + replacement.length;
+      updatePreview();
+      return;
+    default:
+      return;
+  }
+
+  const newText = before + replacement + after;
+  editor.value = text.substring(0, start) + newText + text.substring(end);
+  if (selected) {
+    editor.selectionStart = start + before.length;
+    editor.selectionEnd = start + before.length + selected.length;
+  } else {
+    editor.selectionStart = start + before.length;
+    editor.selectionEnd = start + before.length + replacement.length;
+  }
+  updatePreview();
+}
+
+// ========== KEYBOARD SHORTCUTS ==========
+editor.addEventListener('keydown', (e) => {
+  // Tab support
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    if (e.shiftKey) {
+      // Unindent
+      const lineStart = editor.value.lastIndexOf('\n', start - 1) + 1;
+      if (editor.value.substring(lineStart, lineStart + 2) === '  ') {
+        editor.value = editor.value.substring(0, lineStart) + editor.value.substring(lineStart + 2);
+        editor.selectionStart = Math.max(start - 2, lineStart);
+        editor.selectionEnd = Math.max(end - 2, lineStart);
+      }
+    } else {
+      editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 2;
+    }
+    updatePreview();
+    return;
+  }
+
+  if (e.ctrlKey || e.metaKey) {
+    switch (e.key.toLowerCase()) {
+      case 'b':
+        e.preventDefault();
+        insertFormat('bold');
+        break;
+      case 'i':
+        e.preventDefault();
+        insertFormat('italic');
+        break;
+      case 'k':
+        e.preventDefault();
+        insertFormat('link');
+        break;
+    }
+  }
+});
+
+// ========== DARK MODE ==========
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('md-editor-theme', next);
+  updateThemeIcon(next);
+}
+
+function updateThemeIcon(theme) {
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'dark') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  }
+}
+
+// ========== FULLSCREEN ==========
+function toggleFullscreen() {
+  document.body.classList.toggle('fullscreen');
+}
+
+// Escape to exit fullscreen
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.body.classList.contains('fullscreen')) {
+    document.body.classList.remove('fullscreen');
+  }
+});
+
+// ========== EXPORT ==========
+function toggleExportMenu(e) {
+  e.stopPropagation();
+  exportMenu.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.export-dropdown')) {
+    exportMenu.classList.remove('open');
+  }
+});
+
+function exportHTML() {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exported Document</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.6; color: #333; }
+  pre { background: #282c34; color: #abb2bf; padding: 16px; border-radius: 8px; overflow-x: auto; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
+  :not(pre) > code { background: #f1f3f5; color: #e06c75; padding: 2px 6px; border-radius: 3px; }
+  blockquote { border-left: 4px solid #228be6; padding: 12px 16px; margin: 16px 0; color: #666; background: #f8f9fa; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+  th, td { padding: 8px 14px; border-bottom: 1px solid #dee2e6; text-align: left; }
+  th { background: #f1f3f5; font-weight: 600; border-bottom-width: 2px; }
+  img { max-width: 100%; }
+  h1 { border-bottom: 2px solid #dee2e6; padding-bottom: 8px; }
+  h2 { border-bottom: 1px solid #eee; padding-bottom: 6px; }
+  a { color: #228be6; }
+  hr { border: none; border-top: 2px solid #dee2e6; margin: 24px 0; }
+</style>
+</head>
+<body>
+${preview.innerHTML}
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'document.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  exportMenu.classList.remove('open');
+  showToast('HTML file downloaded');
+}
+
+function copyHTML() {
+  navigator.clipboard.writeText(preview.innerHTML).then(() => {
+    showToast('HTML copied to clipboard');
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+  exportMenu.classList.remove('open');
+}
+
+function copyMarkdown() {
+  navigator.clipboard.writeText(editor.value).then(() => {
+    showToast('Markdown copied to clipboard');
+  }).catch(() => {
+    showToast('Failed to copy');
+  });
+  exportMenu.classList.remove('open');
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  setTimeout(() => toastEl.classList.remove('show'), 2500);
+}
+
+// ========== MOBILE TOGGLE ==========
+let mobileView = 'editor';
+function toggleMobileView() {
+  if (mobileView === 'editor') {
+    editorPane.classList.remove('mobile-active');
+    previewPane.classList.add('mobile-active');
+    mobileView = 'preview';
+  } else {
+    previewPane.classList.remove('mobile-active');
+    editorPane.classList.add('mobile-active');
+    mobileView = 'editor';
+  }
+}
+
+// ========== RESIZER ==========
+let isResizing = false;
+resizer.addEventListener('mousedown', (e) => {
+  isResizing = true;
+  resizer.classList.add('active');
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!isResizing) return;
+  const container = document.getElementById('editorContainer');
+  const rect = container.getBoundingClientRect();
+  const offset = e.clientX - rect.left;
+  const percentage = (offset / rect.width) * 100;
+  if (percentage > 20 && percentage < 80) {
+    editorPane.style.flex = `0 0 ${percentage}%`;
+    previewPane.style.flex = `0 0 ${100 - percentage}%`;
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  if (isResizing) {
+    isResizing = false;
+    resizer.classList.remove('active');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }
+});
+
+// ========== HIRE SECTION ==========
+function toggleHireSection(e) {
+  e.preventDefault();
+  const section = document.getElementById('hireSection');
+  section.classList.toggle('visible');
+  if (section.classList.contains('visible')) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// ========== INIT ==========
+(function init() {
+  // Load theme
+  const savedTheme = localStorage.getItem('md-editor-theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    updateThemeIcon('dark');
+  }
+
+  // Load content
+  const saved = loadSaved();
+  editor.value = saved || defaultContent;
+
+  // Attach events
+  editor.addEventListener('input', updatePreview);
+  editor.addEventListener('click', updateCursorPos);
+  editor.addEventListener('keyup', updateCursorPos);
+
+  // Initial render
+  updatePreview();
+  updateCursorPos();
+})();
+</script>
+</body>
+</html>
