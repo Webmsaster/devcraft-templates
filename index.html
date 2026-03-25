@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevCraft Studio — Premium Web Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0b;
+            --surface: #141416;
+            --surface-hover: #1a1a1e;
+            --border: #2a2a2e;
+            --text: #f5f5f7;
+            --text-secondary: #8e8e93;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --green: #34d399;
+            --orange: #fb923c;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .badge .dot {
+            width: 6px; height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 50%, var(--orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99,102,241,0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Templates Grid */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .template-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .template-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px var(--accent);
+        }
+
+        .template-preview {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-saas {
+            background: linear-gradient(135deg, #1a1040 0%, #0f172a 50%, #1e1040 100%);
+        }
+
+        .preview-restaurant {
+            background: linear-gradient(135deg, #1a0f00 0%, #2d1b00 50%, #1a0a00 100%);
+        }
+
+        .preview-portfolio {
+            background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 50%, #fafafa 100%);
+        }
+
+        .preview-saas::after {
+            content: 'FlowSync';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .preview-restaurant::after {
+            content: 'La Dolce Vita';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #d4a04a;
+            font-style: italic;
+            font-family: Georgia, serif;
+        }
+
+        .preview-portfolio::after {
+            content: 'Alex Chen';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        .template-preview .tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .template-info {
+            padding: 1.5rem;
+        }
+
+        .template-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .template-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .template-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .template-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--green);
+        }
+
+        .template-price .old {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
+        .template-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .template-tags span {
+            padding: 0.2rem 0.6rem;
+            background: rgba(99,102,241,0.1);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent-light);
+        }
+
+        /* Bundle Section */
+        .bundle {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(167,139,250,0.05) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .bundle h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .bundle .save-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: var(--green);
+            color: #000;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .bundle p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .bundle .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .bundle .price-row .new {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .bundle .price-row .old {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+
+        /* Free Tools */
+        .tools-section {
+            text-align: center;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            border-color: var(--green);
+            transform: translateY(-4px);
+        }
+
+        .tool-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Hire Me */
+        .hire-section {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .hire-section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hire-section h2 span {
+            background: linear-gradient(135deg, var(--green), #6ee7b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hire-section p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .service-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+        }
+
+        .service-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .service-item .price {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+            .bundle { padding: 2rem 1.5rem; }
+            .bundle .price-row .new { font-size: 2rem; }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="badge">
+            <span class="dot"></span>
+            Templates available now
+        </div>
+        <h1>Premium Web Templates<br>by <span>DevCraft Studio</span></h1>
+        <p>Hand-coded, modern, responsive. No WordPress, no frameworks — just clean HTML, CSS & JavaScript that works everywhere.</p>
+        <div class="hero-cta">
+            <a href="#templates" class="btn btn-primary">Browse Templates</a>
+            <a href="#hire" class="btn btn-secondary">Hire Me Instead</a>
+        </div>
+    </section>
+
+    <!-- Templates -->
+    <section class="section" id="templates">
+        <div class="section-title">
+            <h2>Templates</h2>
+            <p>Professional, ready-to-use templates at indie-friendly prices</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- SaaS Template -->
+            <div class="template-card fade-in">
+                <div class="template-preview preview-saas">
+                    <span class="tag">BEST SELLER</span>
+                </div>
+                <div class="template-info">
+                    <h3>FlowSync — SaaS Landing Page</h3>
+                    <p>Dark mode SaaS template with hero, features, pricing tiers, testimonials, and FAQ. Perfect for startups.</p>
+                    <div class="template-tags">
+                        <span>Dark Mode</span>
+                        <span>Animations</span>
+                        <span>Responsive</span>
+                    </div>
+                    <div class="template-meta">
+                        <span class="template-price">€19 <span class="old">€49</span></span>
+                        <a href="https://buy.stripe.com/test_3cI9AUbhy4MR2hZ43r6Ri01" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.9rem;">Get Template</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant Template -->
+            <div class="template-card fade-in">
+                <div class="template-preview preview-restaurant">
+                    <span class="tag">NEW</span>
+                </div>
+                <div class="template-info">
+                    <h3>La Dolce Vita — Restaurant</h3>
+                    <p>Elegant restaurant template with menu, reservation form, gallery, and chef section. Warm, inviting design.</p>
+                    <div class="template-tags">
+                        <span>Elegant</span>
+                        <span>Menu</span>
+                        <span>Reservation</span>
+                    </div>
+                    <div class="template-meta">
+                        <span class="template-price">€15 <span class="old">€39</span></span>
+                        <a href="https://buy.stripe.com/test_dRmaEY2L2frv3m3fM96Ri02" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.9rem;">Get Template</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Template -->
+            <div class="template-card fade-in">
+                <div class="template-preview preview-portfolio">
+                    <span class="tag">POPULAR</span>
+                </div>
+                <div class="template-info">
+                    <h3>Alex Chen — Creative Portfolio</h3>
+                    <p>Minimalist portfolio for designers & creatives. Project gallery, timeline, skills, and contact form.</p>
+                    <div class="template-tags">
+                        <span>Minimalist</span>
+                        <span>Gallery</span>
+                        <span>Animated</span>
+                    </div>
+                    <div class="template-meta">
+                        <span class="template-price">€19 <span class="old">€49</span></span>
+                        <a href="https://buy.stripe.com/test_9B614ogBSbbfaOvarP6Ri03" class="btn btn-primary" style="padding:0.5rem 1.2rem;font-size:0.9rem;">Get Template</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bundle -->
+        <div class="bundle fade-in">
+            <span class="save-badge">SAVE 45%</span>
+            <h3>Get All 3 Templates</h3>
+            <p>Everything you need to build websites for any client — SaaS, restaurants, portfolios.</p>
+            <div class="price-row">
+                <span class="new">€29</span>
+                <span class="old">€53</span>
+            </div>
+            <a href="https://buy.stripe.com/test_aFa00k2L2cfj6yf9nL6Ri04" class="btn btn-primary">Get the Bundle</a>
+        </div>
+    </section>
+
+    <!-- Free Tools -->
+    <section class="section tools-section fade-in">
+        <div class="section-title">
+            <h2>Free Tools</h2>
+            <p>Useful tools — no sign-up, no catch</p>
+        </div>
+        <div class="tool-card">
+            <h3>Invoice Generator</h3>
+            <p>Create professional invoices in your browser. Add line items, calculate tax, and print as PDF. No account needed.</p>
+            <a href="tools/invoice-generator/index.html" class="btn btn-secondary">Use for Free</a>
+        </div>
+    </section>
+
+    <!-- Hire Me -->
+    <section class="hire-section" id="hire">
+        <h2>Need something <span>custom</span>?</h2>
+        <p>Templates not enough? I build custom websites, web apps, and automation tools tailored to your exact needs.</p>
+
+        <div class="services-grid">
+            <div class="service-item">
+                <h4>Landing Page</h4>
+                <span class="price">from $25</span>
+            </div>
+            <div class="service-item">
+                <h4>Business Website</h4>
+                <span class="price">from $100</span>
+            </div>
+            <div class="service-item">
+                <h4>Web Application</h4>
+                <span class="price">from $200</span>
+            </div>
+            <div class="service-item">
+                <h4>Bug Fix</h4>
+                <span class="price">from $10</span>
+            </div>
+        </div>
+
+        <a href="[DEIN_FIVERR_LINK]" class="btn btn-primary" style="font-size:1.1rem;padding:1rem 2.5rem;">Hire Me on Fiverr</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 DevCraft Studio. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Scroll animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

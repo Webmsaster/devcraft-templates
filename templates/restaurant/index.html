@@ -1,0 +1,2660 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  Premium Restaurant Template by DevCraft Studio                 ║
+  ║  License: Single Use                                            ║
+  ║                                                                 ║
+  ║  A handcrafted, fully responsive restaurant landing page.       ║
+  ║  No external dependencies — everything is self-contained.       ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="La Dolce Vita — Fine Italian Dining. Experience authentic Italian cuisine in an unforgettable atmosphere.">
+  <title>La Dolce Vita — Fine Italian Dining</title>
+
+  <!-- Google Fonts: Playfair Display (headings) + Lato (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===================================================================
+       CSS RESET & BASE
+       =================================================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Color palette — warm, luxurious restaurant feel */
+      --color-bg-dark: #0f0f0f;
+      --color-bg: #1a1a1a;
+      --color-bg-light: #242424;
+      --color-bg-card: #1e1e1e;
+      --color-gold: #c9a84c;
+      --color-gold-light: #e3c96e;
+      --color-gold-dark: #a88a3a;
+      --color-amber: #d4a853;
+      --color-cream: #f5f0e8;
+      --color-text: #e8e2d6;
+      --color-text-muted: #9a9488;
+      --color-text-dark: #6b655a;
+      --color-white: #ffffff;
+      --color-overlay: rgba(15, 15, 15, 0.85);
+      --color-border: rgba(201, 168, 76, 0.2);
+
+      /* Typography */
+      --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-body: 'Lato', 'Helvetica Neue', Arial, sans-serif;
+
+      /* Spacing */
+      --section-padding: 120px 0;
+      --container-width: 1200px;
+      --gap: 2rem;
+
+      /* Transitions */
+      --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: 0.25s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg-dark);
+      color: var(--color-text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===================================================================
+       UTILITY CLASSES
+       =================================================================== */
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-padding {
+      padding: var(--section-padding);
+    }
+
+    /* Scroll-triggered reveal animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+    .reveal-delay-4 { transition-delay: 0.6s; }
+
+    /* ===================================================================
+       SECTION HEADERS (reusable)
+       =================================================================== */
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500;
+      color: var(--color-cream);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+      margin: 0 auto;
+    }
+
+    /* ===================================================================
+       NAVIGATION
+       =================================================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      transition: all var(--transition-smooth);
+    }
+
+    .navbar.scrolled {
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.8rem 0;
+      box-shadow: 0 2px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--color-gold);
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .nav-logo span {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-cream);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text);
+      text-decoration: none;
+      position: relative;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--color-gold);
+      transition: width var(--transition-smooth);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-gold);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-reserve-btn {
+      background: transparent;
+      border: 1px solid var(--color-gold);
+      color: var(--color-gold) !important;
+      padding: 0.6rem 1.8rem;
+      font-family: var(--font-body) !important;
+      font-size: 0.8rem !important;
+      letter-spacing: 2px !important;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all var(--transition-fast) !important;
+    }
+
+    .nav-reserve-btn:hover {
+      background: var(--color-gold) !important;
+      color: var(--color-bg-dark) !important;
+    }
+
+    .nav-reserve-btn::after {
+      display: none !important;
+    }
+
+    /* Mobile menu toggle */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+
+    .nav-toggle span {
+      width: 25px;
+      height: 2px;
+      background: var(--color-cream);
+      transition: all var(--transition-fast);
+    }
+
+    .nav-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ===================================================================
+       HERO SECTION
+       =================================================================== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Multi-layer gradient background simulating warm restaurant ambiance */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(180, 120, 40, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(120, 80, 30, 0.1) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 50%, rgba(30, 20, 10, 0.9) 0%, var(--color-bg-dark) 100%),
+        linear-gradient(180deg, #1a120a 0%, #0f0f0f 50%, #0a0a0a 100%);
+      z-index: 1;
+    }
+
+    /* Animated floating particles for atmosphere */
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .hero-particles::before,
+    .hero-particles::after {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .hero-particles::before {
+      background: rgba(201, 168, 76, 0.06);
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .hero-particles::after {
+      background: rgba(180, 140, 50, 0.04);
+      bottom: 20%;
+      right: 15%;
+      animation-delay: -6s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* Parallax-like subtle texture overlay */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(201, 168, 76, 0.01) 2px,
+          rgba(201, 168, 76, 0.01) 4px
+        );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      padding: 0 2rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      border: 1px solid var(--color-border);
+      padding: 0.6rem 2rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeInDown 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 400;
+      color: var(--color-cream);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.6s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--color-gold);
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-body);
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      max-width: 550px;
+      margin: 0 auto 3rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.9s forwards;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.2s forwards;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--color-bg-dark);
+      background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+      padding: 1rem 3rem;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .btn-primary:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--color-cream);
+      background: transparent;
+      padding: 1rem 3rem;
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: all var(--transition-smooth);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    /* Hero scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.5s forwards;
+    }
+
+    .hero-scroll span {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: var(--color-gold);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-cream);
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollDown {
+      0% { top: -100%; }
+      50% { top: 100%; }
+      100% { top: 100%; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===================================================================
+       ABOUT SECTION
+       =================================================================== */
+    .about {
+      background: var(--color-bg);
+      position: relative;
+    }
+
+    .about::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .about-image {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+    }
+
+    /* Gradient placeholder simulating a restaurant interior photo */
+    .about-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(201, 168, 76, 0.2) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 60%, rgba(160, 100, 40, 0.15) 0%, transparent 50%),
+        linear-gradient(160deg, #2a1f14 0%, #1a130a 40%, #0f0a05 100%);
+      position: relative;
+    }
+
+    .about-image-placeholder::after {
+      content: 'Restaurant Interior';
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+      border: 1px solid rgba(201, 168, 76, 0.15);
+      padding: 0.4rem 1rem;
+    }
+
+    .about-image-border {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      right: -2rem;
+      bottom: -2rem;
+      border: 1px solid var(--color-border);
+      pointer-events: none;
+    }
+
+    .about-content {
+      padding: 2rem 0;
+    }
+
+    .about-content .section-subtitle {
+      text-align: left;
+    }
+
+    .about-content .section-title {
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+
+    .about-text {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-signature {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-style: italic;
+      color: var(--color-gold);
+      margin-top: 2rem;
+    }
+
+    .about-role {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+      margin-top: 0.3rem;
+    }
+
+    /* ===================================================================
+       FEATURES / HIGHLIGHTS
+       =================================================================== */
+    .features {
+      background: var(--color-bg-dark);
+      position: relative;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 3rem 2rem;
+      border: 1px solid transparent;
+      transition: all var(--transition-smooth);
+      position: relative;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid var(--color-border);
+      opacity: 0;
+      transition: opacity var(--transition-smooth);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 2rem;
+      color: var(--color-gold);
+    }
+
+    .feature-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--color-cream);
+      margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+
+    /* ===================================================================
+       MENU SECTION
+       =================================================================== */
+    .menu {
+      background: var(--color-bg);
+      position: relative;
+    }
+
+    .menu::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    /* Menu category tabs */
+    .menu-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .menu-tab {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      padding: 0.8rem 2rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .menu-tab:hover,
+    .menu-tab.active {
+      color: var(--color-bg-dark);
+      background: var(--color-gold);
+      border-color: var(--color-gold);
+    }
+
+    /* Menu category panels */
+    .menu-category {
+      display: none;
+    }
+
+    .menu-category.active {
+      display: block;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem 4rem;
+    }
+
+    .menu-item {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+      transition: all var(--transition-fast);
+    }
+
+    .menu-item:hover {
+      padding-left: 1rem;
+      border-bottom-color: var(--color-gold);
+    }
+
+    .menu-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+      gap: 1rem;
+    }
+
+    .menu-item-name {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--color-cream);
+    }
+
+    .menu-item-dots {
+      flex: 1;
+      border-bottom: 1px dotted var(--color-text-dark);
+      min-width: 30px;
+      margin-bottom: 4px;
+    }
+
+    .menu-item-price {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--color-gold);
+      white-space: nowrap;
+    }
+
+    .menu-item-desc {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .menu-item-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .menu-tag {
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      color: var(--color-gold);
+    }
+
+    /* ===================================================================
+       CHEF SECTION (parallax-like)
+       =================================================================== */
+    .chef {
+      position: relative;
+      padding: 140px 0;
+      overflow: hidden;
+    }
+
+    /* Parallax-like fixed background effect */
+    .chef-bg {
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(ellipse at 60% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 30% 30%, rgba(140, 90, 30, 0.06) 0%, transparent 50%),
+        linear-gradient(170deg, #1a130a 0%, #0f0a06 50%, #0f0f0f 100%);
+      background-attachment: fixed;
+      z-index: 1;
+    }
+
+    .chef-content {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .chef-text-side {
+      order: 2;
+    }
+
+    .chef-image-side {
+      order: 1;
+      position: relative;
+    }
+
+    .chef-image-placeholder {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(201, 168, 76, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 70%, rgba(100, 60, 20, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #2a1f14 0%, #15100a 100%);
+      position: relative;
+    }
+
+    .chef-image-placeholder::after {
+      content: 'Chef Portrait';
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+      border: 1px solid rgba(201, 168, 76, 0.15);
+      padding: 0.4rem 1rem;
+    }
+
+    .chef-quote {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-cream);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .chef-quote::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--color-gold), transparent);
+    }
+
+    .chef-bio {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .chef-name {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: var(--color-gold);
+    }
+
+    .chef-title {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+      margin-top: 0.3rem;
+    }
+
+    .chef-awards {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .chef-award {
+      text-align: center;
+    }
+
+    .chef-award-number {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      color: var(--color-gold);
+      display: block;
+    }
+
+    .chef-award-label {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+    }
+
+    /* ===================================================================
+       GALLERY SECTION
+       =================================================================== */
+    .gallery {
+      background: var(--color-bg-dark);
+      position: relative;
+    }
+
+    .gallery::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* Varied sizes for visual interest */
+    .gallery-item:nth-child(1) {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .gallery-item:nth-child(4) {
+      grid-column: span 2;
+    }
+
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 250px;
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .gallery-item:hover .gallery-placeholder {
+      transform: scale(1.05);
+    }
+
+    /* Unique gradient for each gallery placeholder to simulate different photos */
+    .gallery-item:nth-child(1) .gallery-placeholder {
+      min-height: 520px;
+      background:
+        radial-gradient(ellipse at 40% 50%, rgba(201, 168, 76, 0.15) 0%, transparent 60%),
+        linear-gradient(135deg, #2a1f14 0%, #1a120a 50%, #0f0a05 100%);
+    }
+
+    .gallery-item:nth-child(2) .gallery-placeholder {
+      background:
+        radial-gradient(ellipse at 60% 40%, rgba(180, 120, 40, 0.12) 0%, transparent 50%),
+        linear-gradient(135deg, #201810 0%, #150f0a 100%);
+    }
+
+    .gallery-item:nth-child(3) .gallery-placeholder {
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(160, 140, 80, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #1a1510 0%, #0f0c08 100%);
+    }
+
+    .gallery-item:nth-child(4) .gallery-placeholder {
+      background:
+        radial-gradient(ellipse at 40% 60%, rgba(201, 168, 76, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #221a10 0%, #120d08 100%);
+    }
+
+    .gallery-item:nth-child(5) .gallery-placeholder {
+      background:
+        radial-gradient(ellipse at 70% 30%, rgba(140, 100, 40, 0.12) 0%, transparent 50%),
+        linear-gradient(135deg, #1e1610 0%, #100c08 100%);
+    }
+
+    .gallery-item:nth-child(6) .gallery-placeholder {
+      background:
+        radial-gradient(ellipse at 30% 70%, rgba(180, 150, 60, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #241c12 0%, #130e08 100%);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 15, 15, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition-smooth);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .gallery-overlay-text {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--color-gold);
+      letter-spacing: 2px;
+    }
+
+    /* ===================================================================
+       RESERVATION SECTION
+       =================================================================== */
+    .reservation {
+      background: var(--color-bg);
+      position: relative;
+    }
+
+    .reservation::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    .reservation-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .reservation-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: var(--color-cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .reservation-info p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .reservation-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .reservation-detail-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--color-gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .reservation-detail-text {
+      font-size: 0.95rem;
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    .reservation-detail-text strong {
+      display: block;
+      font-weight: 700;
+      color: var(--color-cream);
+      margin-bottom: 0.2rem;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Reservation form styling */
+    .reservation-form {
+      background: var(--color-bg-card);
+      padding: 3rem;
+      border: 1px solid var(--color-border);
+      position: relative;
+    }
+
+    .reservation-form::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 2rem;
+      right: 2rem;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--color-cream);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 0.9rem 1.2rem;
+      outline: none;
+      transition: border-color var(--transition-fast);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--color-gold);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--color-text-dark);
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1.2rem center;
+      padding-right: 3rem;
+      cursor: pointer;
+    }
+
+    .form-select option {
+      background: var(--color-bg);
+      color: var(--color-cream);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-submit {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-bg-dark);
+      background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+      border: none;
+      padding: 1.1rem;
+      cursor: pointer;
+      transition: all var(--transition-smooth);
+      margin-top: 0.5rem;
+    }
+
+    .form-submit:hover {
+      background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(201, 168, 76, 0.2);
+    }
+
+    /* ===================================================================
+       HOURS & LOCATION
+       =================================================================== */
+    .hours-location {
+      background: var(--color-bg-dark);
+      position: relative;
+    }
+
+    .hours-location::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .hours-divider {
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--color-border), transparent);
+    }
+
+    .hours-card h3,
+    .location-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--color-cream);
+      margin-bottom: 2rem;
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.06);
+    }
+
+    .hours-day {
+      font-size: 0.95rem;
+      color: var(--color-text);
+    }
+
+    .hours-time {
+      font-size: 0.95rem;
+      color: var(--color-gold);
+      font-weight: 400;
+    }
+
+    .hours-note {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--color-text-dark);
+      margin-top: 1.5rem;
+    }
+
+    .location-address {
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* Map placeholder */
+    .location-map {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 60%),
+        linear-gradient(135deg, #1a1510 0%, #0f0c08 100%);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .location-map-text {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-text-dark);
+    }
+
+    /* ===================================================================
+       TESTIMONIALS / QUOTE BANNER
+       =================================================================== */
+    .testimonial-banner {
+      background: var(--color-bg);
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testimonial-banner::before {
+      content: '\201C';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      font-family: var(--font-heading);
+      font-size: 20rem;
+      color: rgba(201, 168, 76, 0.04);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .testimonial-text {
+      font-family: var(--font-heading);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-cream);
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-author {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-source {
+      font-size: 0.8rem;
+      color: var(--color-text-dark);
+      margin-top: 0.3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===================================================================
+       FOOTER
+       =================================================================== */
+    .footer {
+      background: var(--color-bg-dark);
+      padding: 80px 0 0;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+    }
+
+    .footer-brand {
+      max-width: 300px;
+    }
+
+    .footer-logo {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--color-gold);
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo span {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--color-cream);
+    }
+
+    .footer-desc {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      transition: all var(--transition-fast);
+    }
+
+    .footer-social a:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    .footer-social svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .footer-column h4 {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-column a {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-column a:hover {
+      color: var(--color-gold);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--color-text-dark);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-legal a {
+      font-size: 0.8rem;
+      color: var(--color-text-dark);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .footer-legal a:hover {
+      color: var(--color-gold);
+    }
+
+    /* ===================================================================
+       RESPONSIVE DESIGN
+       =================================================================== */
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      :root {
+        --section-padding: 80px 0;
+      }
+
+      .about-grid,
+      .chef-content,
+      .reservation-wrapper {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .chef-text-side { order: 1; }
+      .chef-image-side { order: 2; }
+
+      .about-image-border { display: none; }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .gallery-item:nth-child(1) {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+
+      .gallery-item:nth-child(1) .gallery-placeholder {
+        min-height: 350px;
+      }
+
+      .gallery-item:nth-child(4) {
+        grid-column: span 1;
+      }
+
+      .hours-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .hours-divider { display: none; }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+      }
+
+      .footer-brand {
+        grid-column: span 2;
+        max-width: 100%;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      :root {
+        --section-padding: 60px 0;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background: rgba(15, 15, 15, 0.98);
+        flex-direction: column;
+        justify-content: center;
+        gap: 2rem;
+        transition: right var(--transition-smooth);
+      }
+
+      .nav-links.open {
+        right: 0;
+      }
+
+      .nav-links a {
+        font-size: 1.1rem;
+      }
+
+      .nav-toggle {
+        display: flex;
+        z-index: 1001;
+      }
+
+      .hero-title {
+        font-size: clamp(2.2rem, 8vw, 3.5rem);
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .menu-tabs {
+        gap: 0.5rem;
+      }
+
+      .menu-tab {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.7rem;
+      }
+
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-item:nth-child(1) {
+        grid-column: span 1;
+      }
+
+      .gallery-item:nth-child(4) {
+        grid-column: span 1;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .reservation-form {
+        padding: 2rem 1.5rem;
+      }
+
+      .chef-awards {
+        flex-wrap: wrap;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .footer-brand {
+        grid-column: span 1;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .testimonial-banner {
+        padding: 60px 0;
+      }
+    }
+
+    /* Small mobile */
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1.2rem;
+      }
+
+      .hero-badge {
+        font-size: 0.65rem;
+        padding: 0.5rem 1.2rem;
+        letter-spacing: 4px;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .menu-item-header {
+        flex-wrap: wrap;
+      }
+
+      .menu-item-dots {
+        display: none;
+      }
+
+      .menu-item-price {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================
+       NAVIGATION
+       ================================================================ -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo">La Dolce <span>Vita</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#chef">Chef</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#hours">Hours</a></li>
+        <li><a href="#reservation" class="nav-reserve-btn">Reserve</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================================================================
+       HERO SECTION
+       ================================================================ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">Est. 1987 &mdash; Milano, Italia</div>
+      <h1 class="hero-title">
+        Where Every Meal<br>Becomes a <em>Masterpiece</em>
+      </h1>
+      <p class="hero-subtitle">
+        Experience the art of authentic Italian cuisine, crafted with passion,
+        served with elegance, and savored in an atmosphere that transports you
+        to the heart of Tuscany.
+      </p>
+      <div class="hero-buttons">
+        <a href="#reservation" class="btn-primary"><span>Reserve a Table</span></a>
+        <a href="#menu" class="btn-secondary">Explore the Menu</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       ABOUT SECTION
+       ================================================================ -->
+  <section class="about section-padding" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image reveal">
+          <div class="about-image-placeholder"></div>
+          <div class="about-image-border"></div>
+        </div>
+        <div class="about-content">
+          <span class="section-subtitle reveal">Our Story</span>
+          <h2 class="section-title reveal reveal-delay-1">A Tradition of Excellence Since 1987</h2>
+          <p class="about-text reveal reveal-delay-2">
+            Nestled in the heart of the city, La Dolce Vita has been a sanctuary for
+            those who believe that dining is not merely eating &mdash; it is an experience.
+            Founded by the Rossi family over three decades ago, our restaurant carries
+            forward a legacy of culinary artistry passed down through generations.
+          </p>
+          <p class="about-text reveal reveal-delay-2">
+            Every ingredient is hand-selected from trusted Italian suppliers. Every dish
+            tells a story of the regions it was born in &mdash; from the sun-kissed tomatoes
+            of Naples to the delicate truffles of Piedmont. Here, tradition meets
+            innovation on every plate.
+          </p>
+          <div class="reveal reveal-delay-3">
+            <p class="about-signature">Marco Rossi</p>
+            <p class="about-role">Founder & Proprietor</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FEATURES / HIGHLIGHTS
+       ================================================================ -->
+  <section class="features section-padding">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle reveal">Why Choose Us</span>
+        <h2 class="section-title reveal reveal-delay-1">The La Dolce Vita Experience</h2>
+        <div class="section-divider reveal reveal-delay-2"></div>
+      </div>
+      <div class="features-grid">
+        <!-- Feature 1: Ingredients -->
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              <path d="M12 6v6l4 2"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3>Fresh Daily</h3>
+          <p>Our ingredients arrive fresh every morning from local farms and trusted Italian importers. Nothing frozen, nothing compromised.</p>
+        </div>
+        <!-- Feature 2: Wine -->
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2h8l-1 7H9L8 2z"/>
+              <path d="M9 9c0 3 3 5 3 5s3-2 3-5"/>
+              <line x1="12" y1="14" x2="12" y2="20"/>
+              <line x1="8" y1="20" x2="16" y2="20"/>
+            </svg>
+          </div>
+          <h3>Curated Wines</h3>
+          <p>Over 200 labels from Italy&rsquo;s finest vineyards. Our sommelier pairs each dish with the perfect glass to elevate your experience.</p>
+        </div>
+        <!-- Feature 3: Ambiance -->
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3c-1.5 0-3 1-3 3 0 1.5 1 2.5 2 3.5L12 11l1-1.5c1-1 2-2 2-3.5 0-2-1.5-3-3-3z"/>
+              <path d="M12 11v7"/>
+              <path d="M9 18h6"/>
+              <path d="M10 21h4"/>
+            </svg>
+          </div>
+          <h3>Intimate Ambiance</h3>
+          <p>Warm candlelight, soft Italian melodies, and interiors inspired by Florentine villas create an unforgettable dining atmosphere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       MENU SECTION
+       ================================================================ -->
+  <section class="menu section-padding" id="menu">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle reveal">Culinary Selection</span>
+        <h2 class="section-title reveal reveal-delay-1">Our Menu</h2>
+        <div class="section-divider reveal reveal-delay-2"></div>
+      </div>
+
+      <!-- Menu category tabs -->
+      <div class="menu-tabs reveal">
+        <button class="menu-tab active" data-category="starters">Starters</button>
+        <button class="menu-tab" data-category="mains">Main Courses</button>
+        <button class="menu-tab" data-category="desserts">Desserts</button>
+        <button class="menu-tab" data-category="drinks">Drinks</button>
+      </div>
+
+      <!-- Starters -->
+      <div class="menu-category active" id="starters">
+        <div class="menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Burrata Pugliese</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;16</span>
+            </div>
+            <p class="menu-item-desc">Creamy burrata on a bed of heirloom tomatoes, fresh basil, aged balsamic reduction, and Ligurian olive oil</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Vegetarian</span>
+            </div>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Carpaccio di Manzo</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;19</span>
+            </div>
+            <p class="menu-item-desc">Thinly sliced Piedmontese beef, truffle aioli, wild arugula, shaved Parmigiano Reggiano, capers</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Polpo alla Griglia</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;22</span>
+            </div>
+            <p class="menu-item-desc">Chargrilled Mediterranean octopus, smoked paprika, roasted fingerling potatoes, salsa verde</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Bruschetta Trio</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;14</span>
+            </div>
+            <p class="menu-item-desc">Three artisanal bruschette: nduja &amp; stracciatella, wild mushroom, and classic pomodoro on sourdough</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Chef&rsquo;s Pick</span>
+            </div>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Vitello Tonnato</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;18</span>
+            </div>
+            <p class="menu-item-desc">Slow-cooked veal loin, silky tuna-caper sauce, crispy capers, microgreens</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Arancini al Tartufo</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;15</span>
+            </div>
+            <p class="menu-item-desc">Golden-fried risotto balls filled with black truffle and fontina, served with saffron aioli</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Vegetarian</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Courses -->
+      <div class="menu-category" id="mains">
+        <div class="menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Ossobuco alla Milanese</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;38</span>
+            </div>
+            <p class="menu-item-desc">Braised veal shank in white wine and saffron, gremolata, creamy risotto Milanese</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Signature</span>
+            </div>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Tagliatelle al Rag&ugrave;</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;26</span>
+            </div>
+            <p class="menu-item-desc">House-made egg pasta, slow-simmered Bolognese with Chianina beef, 24-month Parmigiano</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Branzino al Forno</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;34</span>
+            </div>
+            <p class="menu-item-desc">Whole roasted Mediterranean sea bass, Taggiasca olives, cherry tomatoes, capers, white wine jus</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Risotto ai Funghi Porcini</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;28</span>
+            </div>
+            <p class="menu-item-desc">Carnaroli rice, wild porcini mushrooms, truffle oil, aged Pecorino, chives</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Vegetarian</span>
+            </div>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Filetto di Manzo</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;42</span>
+            </div>
+            <p class="menu-item-desc">Premium beef tenderloin, Barolo wine reduction, roasted bone marrow, seasonal vegetables</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Signature</span>
+            </div>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Ravioli di Aragosta</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;36</span>
+            </div>
+            <p class="menu-item-desc">Handcrafted lobster ravioli, bisque sauce, asparagus tips, lemon zest, chervil</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desserts -->
+      <div class="menu-category" id="desserts">
+        <div class="menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Tiramis&ugrave; Classico</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;14</span>
+            </div>
+            <p class="menu-item-desc">Our legendary recipe: Savoiardi, espresso, mascarpone cream, Marsala, cocoa dust</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Signature</span>
+            </div>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Panna Cotta al Limone</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;12</span>
+            </div>
+            <p class="menu-item-desc">Silky Amalfi lemon panna cotta, wild berry compote, candied lemon zest, amaretti crumble</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Semifreddo al Pistacchio</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;13</span>
+            </div>
+            <p class="menu-item-desc">Bronte pistachio semifreddo, dark chocolate ganache, candied pistachios, espresso syrup</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Cannoli Siciliani</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;11</span>
+            </div>
+            <p class="menu-item-desc">Crispy pastry shells, sheep&rsquo;s milk ricotta, candied orange peel, chocolate chips, powdered sugar</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Torta Caprese</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;13</span>
+            </div>
+            <p class="menu-item-desc">Flourless almond and dark chocolate cake, whipped cream, Amarena cherries</p>
+            <div class="menu-item-tags">
+              <span class="menu-tag">Gluten-Free</span>
+            </div>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Affogato al Caff&egrave;</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;9</span>
+            </div>
+            <p class="menu-item-desc">Vanilla gelato drowned in a shot of hot espresso, served with biscotti</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drinks -->
+      <div class="menu-category" id="drinks">
+        <div class="menu-grid">
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Negroni Classico</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;14</span>
+            </div>
+            <p class="menu-item-desc">Tanqueray gin, Campari, sweet vermouth, stirred, served on a large ice sphere with orange peel</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Aperol Spritz</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;12</span>
+            </div>
+            <p class="menu-item-desc">Aperol, Prosecco, soda water, fresh orange slice &mdash; the quintessential Italian aperitivo</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Barolo DOCG 2018</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;18 / glass</span>
+            </div>
+            <p class="menu-item-desc">Nebbiolo grape, Piedmont &mdash; full-bodied, notes of tar, roses, and dried cherry</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Limoncello Spritz</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;11</span>
+            </div>
+            <p class="menu-item-desc">House-made limoncello, Prosecco, soda, fresh mint &mdash; refreshing and bright</p>
+          </div>
+          <div class="menu-item reveal">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Espresso Martini</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;15</span>
+            </div>
+            <p class="menu-item-desc">Freshly brewed espresso, vodka, Kahl&uacute;a, vanilla syrup &mdash; rich and velvety</p>
+          </div>
+          <div class="menu-item reveal reveal-delay-1">
+            <div class="menu-item-header">
+              <span class="menu-item-name">Acqua Minerale</span>
+              <span class="menu-item-dots"></span>
+              <span class="menu-item-price">&euro;5</span>
+            </div>
+            <p class="menu-item-desc">San Pellegrino sparkling or Acqua Panna still &mdash; 750ml bottle</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       TESTIMONIAL BANNER
+       ================================================================ -->
+  <section class="testimonial-banner">
+    <div class="container">
+      <p class="testimonial-text reveal">
+        &ldquo;La Dolce Vita redefines what Italian fine dining should be. Every course
+        was a revelation, every moment felt curated with impeccable care.
+        This is not just a restaurant &mdash; it is a destination.&rdquo;
+      </p>
+      <p class="testimonial-author reveal reveal-delay-1">The Michelin Guide</p>
+      <p class="testimonial-source reveal reveal-delay-2">Two Stars &mdash; Exceptional Cuisine</p>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       CHEF SECTION
+       ================================================================ -->
+  <section class="chef section-padding" id="chef">
+    <div class="chef-bg"></div>
+    <div class="container">
+      <div class="chef-content">
+        <div class="chef-text-side">
+          <span class="section-subtitle reveal" style="text-align:left">Meet the Chef</span>
+          <div class="chef-quote reveal reveal-delay-1">
+            &ldquo;Cooking is not about technique alone. It is about emotion, memory,
+            and the courage to let simple ingredients speak for themselves.&rdquo;
+          </div>
+          <p class="chef-bio reveal reveal-delay-2">
+            Chef Alessandro Ferrara trained at the Culinary Institute of Florence before
+            honing his craft at three-Michelin-starred restaurants across Italy and France.
+            With over 20 years of experience, he brings a philosophy rooted in respect for
+            ingredients, seasonal awareness, and the belief that food should tell stories.
+          </p>
+          <p class="chef-bio reveal reveal-delay-2">
+            At La Dolce Vita, Chef Alessandro leads a team of dedicated artisans who share
+            his vision: to honor tradition while embracing the unexpected.
+          </p>
+          <div class="reveal reveal-delay-3">
+            <p class="chef-name">Chef Alessandro Ferrara</p>
+            <p class="chef-title">Executive Chef & Creative Director</p>
+          </div>
+          <div class="chef-awards reveal reveal-delay-3">
+            <div class="chef-award">
+              <span class="chef-award-number">2</span>
+              <span class="chef-award-label">Michelin Stars</span>
+            </div>
+            <div class="chef-award">
+              <span class="chef-award-number">25+</span>
+              <span class="chef-award-label">Years Experience</span>
+            </div>
+            <div class="chef-award">
+              <span class="chef-award-number">14</span>
+              <span class="chef-award-label">Awards Won</span>
+            </div>
+          </div>
+        </div>
+        <div class="chef-image-side reveal">
+          <div class="chef-image-placeholder"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       GALLERY SECTION
+       ================================================================ -->
+  <section class="gallery section-padding" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle reveal">Visual Journey</span>
+        <h2 class="section-title reveal reveal-delay-1">Gallery</h2>
+        <div class="section-divider reveal reveal-delay-2"></div>
+      </div>
+      <div class="gallery-grid reveal">
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">The Dining Room</span></div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">Signature Dish</span></div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">Wine Cellar</span></div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">Kitchen in Action</span></div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">Private Events</span></div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-placeholder"></div>
+          <div class="gallery-overlay"><span class="gallery-overlay-text">The Terrace</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       RESERVATION SECTION
+       ================================================================ -->
+  <section class="reservation section-padding" id="reservation">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle reveal">Join Us</span>
+        <h2 class="section-title reveal reveal-delay-1">Make a Reservation</h2>
+        <div class="section-divider reveal reveal-delay-2"></div>
+      </div>
+      <div class="reservation-wrapper">
+        <div class="reservation-info reveal">
+          <h3>We&rsquo;d Love to Host You</h3>
+          <p>
+            Whether it&rsquo;s an intimate dinner for two, a family celebration, or a
+            corporate event, our team will ensure every detail is perfect. For parties
+            larger than 8 guests, please contact us directly.
+          </p>
+
+          <!-- Phone -->
+          <div class="reservation-detail">
+            <svg class="reservation-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            <div class="reservation-detail-text">
+              <strong>Call Us</strong>
+              +39 02 7634 5890
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="reservation-detail">
+            <svg class="reservation-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M22 4l-10 8L2 4"/>
+            </svg>
+            <div class="reservation-detail-text">
+              <strong>Email</strong>
+              reservations@ladolcevita.it
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="reservation-detail">
+            <svg class="reservation-detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <div class="reservation-detail-text">
+              <strong>Visit Us</strong>
+              Via Monte Napoleone 24<br>
+              20121 Milano, Italia
+            </div>
+          </div>
+        </div>
+
+        <!-- Reservation Form -->
+        <form class="reservation-form reveal reveal-delay-1" action="#" method="POST">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-name">Full Name</label>
+              <input class="form-input" type="text" id="res-name" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-email">Email</label>
+              <input class="form-input" type="email" id="res-email" name="email" placeholder="your@email.com" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-phone">Phone</label>
+              <input class="form-input" type="tel" id="res-phone" name="phone" placeholder="+39 xxx xxx xxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-guests">Guests</label>
+              <select class="form-select" id="res-guests" name="guests" required>
+                <option value="" disabled selected>Number of guests</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+                <option value="5">5 Guests</option>
+                <option value="6">6 Guests</option>
+                <option value="7">7 Guests</option>
+                <option value="8">8 Guests</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="res-date">Date</label>
+              <input class="form-input" type="date" id="res-date" name="date" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="res-time">Time</label>
+              <select class="form-select" id="res-time" name="time" required>
+                <option value="" disabled selected>Preferred time</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="13:00">1:00 PM</option>
+                <option value="13:30">1:30 PM</option>
+                <option value="18:00">6:00 PM</option>
+                <option value="18:30">6:30 PM</option>
+                <option value="19:00">7:00 PM</option>
+                <option value="19:30">7:30 PM</option>
+                <option value="20:00">8:00 PM</option>
+                <option value="20:30">8:30 PM</option>
+                <option value="21:00">9:00 PM</option>
+                <option value="21:30">9:30 PM</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="res-occasion">Occasion</label>
+            <select class="form-select" id="res-occasion" name="occasion">
+              <option value="" disabled selected>Select occasion (optional)</option>
+              <option value="birthday">Birthday</option>
+              <option value="anniversary">Anniversary</option>
+              <option value="business">Business Dinner</option>
+              <option value="date">Date Night</option>
+              <option value="celebration">Celebration</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="res-notes">Special Requests</label>
+            <textarea class="form-textarea" id="res-notes" name="notes" placeholder="Dietary requirements, seating preferences, or any special requests..."></textarea>
+          </div>
+          <button type="submit" class="form-submit">Confirm Reservation</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       HOURS & LOCATION
+       ================================================================ -->
+  <section class="hours-location section-padding" id="hours">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle reveal">Plan Your Visit</span>
+        <h2 class="section-title reveal reveal-delay-1">Hours &amp; Location</h2>
+        <div class="section-divider reveal reveal-delay-2"></div>
+      </div>
+      <div class="hours-grid">
+        <!-- Opening Hours -->
+        <div class="hours-card reveal">
+          <h3>Opening Hours</h3>
+          <div class="hours-row">
+            <span class="hours-day">Monday</span>
+            <span class="hours-time">Closed</span>
+          </div>
+          <div class="hours-row">
+            <span class="hours-day">Tuesday &mdash; Thursday</span>
+            <span class="hours-time">12:00 &ndash; 14:30 &middot; 18:00 &ndash; 22:00</span>
+          </div>
+          <div class="hours-row">
+            <span class="hours-day">Friday &mdash; Saturday</span>
+            <span class="hours-time">12:00 &ndash; 14:30 &middot; 18:00 &ndash; 23:00</span>
+          </div>
+          <div class="hours-row">
+            <span class="hours-day">Sunday</span>
+            <span class="hours-time">12:00 &ndash; 15:00 &middot; 18:00 &ndash; 21:30</span>
+          </div>
+          <p class="hours-note">* Kitchen closes 45 minutes before closing time. Last reservations accepted 1 hour before close.</p>
+        </div>
+
+        <div class="hours-divider"></div>
+
+        <!-- Location -->
+        <div class="location-card reveal reveal-delay-1">
+          <h3>Find Us</h3>
+          <p class="location-address">
+            Via Monte Napoleone 24<br>
+            20121 Milano MI<br>
+            Italia
+          </p>
+          <div class="location-map">
+            <span class="location-map-text">Interactive map &mdash; Replace with Google Maps embed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <!-- Brand column -->
+        <div class="footer-brand">
+          <div class="footer-logo">La Dolce <span>Vita</span></div>
+          <p class="footer-desc">
+            Fine Italian dining in the heart of Milano. A timeless celebration of
+            flavor, craftsmanship, and the Italian art of living well.
+          </p>
+          <div class="footer-social">
+            <!-- Instagram -->
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5"/>
+                <circle cx="12" cy="12" r="5"/>
+                <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
+            <!-- Facebook -->
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z"/>
+              </svg>
+            </a>
+            <!-- X / Twitter -->
+            <a href="#" aria-label="Twitter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l16 16M20 4L4 20"/>
+              </svg>
+            </a>
+            <!-- TripAdvisor / Globe -->
+            <a href="#" aria-label="TripAdvisor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20"/>
+                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <!-- Quick Links -->
+        <div class="footer-column">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="#about">Our Story</a></li>
+            <li><a href="#menu">The Menu</a></li>
+            <li><a href="#chef">The Chef</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#reservation">Reservations</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="tel:+390276345890">+39 02 7634 5890</a></li>
+            <li><a href="mailto:info@ladolcevita.it">info@ladolcevita.it</a></li>
+            <li><a href="#">Via Monte Napoleone 24</a></li>
+            <li><a href="#">20121 Milano, Italia</a></li>
+          </ul>
+        </div>
+        <!-- Experience -->
+        <div class="footer-column">
+          <h4>Experience</h4>
+          <ul>
+            <li><a href="#">Private Dining</a></li>
+            <li><a href="#">Wine Tastings</a></li>
+            <li><a href="#">Cooking Classes</a></li>
+            <li><a href="#">Gift Cards</a></li>
+            <li><a href="#">Catering</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 La Dolce Vita. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Imprint</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================================================================
+     JAVASCRIPT — Minimal, self-contained
+     ================================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------------------------------------------------------------
+         1. NAVBAR — add 'scrolled' class on scroll
+         --------------------------------------------------------------- */
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      function handleNavScroll() {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > 60) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      }
+
+      window.addEventListener('scroll', handleNavScroll, { passive: true });
+
+      /* ---------------------------------------------------------------
+         2. MOBILE NAV TOGGLE
+         --------------------------------------------------------------- */
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      navToggle.addEventListener('click', function () {
+        navToggle.classList.toggle('active');
+        navLinks.classList.toggle('open');
+        document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+      });
+
+      // Close mobile nav when a link is clicked
+      navLinks.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          navToggle.classList.remove('active');
+          navLinks.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+
+      /* ---------------------------------------------------------------
+         3. SCROLL REVEAL — Intersection Observer
+         --------------------------------------------------------------- */
+      const revealElements = document.querySelectorAll('.reveal');
+
+      if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.12,
+          rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealElements.forEach(function (el) {
+          revealObserver.observe(el);
+        });
+      } else {
+        // Fallback: show all elements if IntersectionObserver is not supported
+        revealElements.forEach(function (el) {
+          el.classList.add('visible');
+        });
+      }
+
+      /* ---------------------------------------------------------------
+         4. MENU TABS — category switching
+         --------------------------------------------------------------- */
+      const menuTabs = document.querySelectorAll('.menu-tab');
+      const menuCategories = document.querySelectorAll('.menu-category');
+
+      menuTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          // Remove active class from all tabs and categories
+          menuTabs.forEach(function (t) { t.classList.remove('active'); });
+          menuCategories.forEach(function (c) { c.classList.remove('active'); });
+
+          // Activate selected tab and category
+          tab.classList.add('active');
+          var categoryId = tab.getAttribute('data-category');
+          var categoryEl = document.getElementById(categoryId);
+          if (categoryEl) {
+            categoryEl.classList.add('active');
+
+            // Trigger reveal animations for newly visible items
+            categoryEl.querySelectorAll('.reveal').forEach(function (el) {
+              el.classList.remove('visible');
+              // Small delay to retrigger animation
+              requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                  el.classList.add('visible');
+                });
+              });
+            });
+          }
+        });
+      });
+
+      /* ---------------------------------------------------------------
+         5. SMOOTH SCROLL for anchor links (polyfill for older browsers)
+         --------------------------------------------------------------- */
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            var offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 80;
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+          }
+        });
+      });
+
+      /* ---------------------------------------------------------------
+         6. FORM — prevent actual submission (demo only)
+         --------------------------------------------------------------- */
+      var form = document.querySelector('.reservation-form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var btn = form.querySelector('.form-submit');
+          var originalText = btn.textContent;
+          btn.textContent = 'Reservation Confirmed!';
+          btn.style.background = 'linear-gradient(135deg, #4a7c59, #6b9e76)';
+          setTimeout(function () {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            form.reset();
+          }, 3000);
+        });
+      }
+
+      /* ---------------------------------------------------------------
+         7. PARALLAX EFFECT — subtle background movement on scroll
+         --------------------------------------------------------------- */
+      var chefBg = document.querySelector('.chef-bg');
+      if (chefBg) {
+        window.addEventListener('scroll', function () {
+          var scrolled = window.pageYOffset;
+          var rect = chefBg.parentElement.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            var offset = (scrolled - chefBg.parentElement.offsetTop) * 0.15;
+            chefBg.style.transform = 'translateY(' + offset + 'px)';
+          }
+        }, { passive: true });
+      }
+
+    })();
+  </script>
+
+</body>
+</html>
